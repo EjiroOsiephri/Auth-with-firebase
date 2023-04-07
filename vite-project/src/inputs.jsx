@@ -62,7 +62,7 @@ export const AuthInput = () => {
     const value = {
         user: currentUser
     }
-    console.log(value?.user?.email);
+
 
     return <AuthContext.Provider value={value}>
 

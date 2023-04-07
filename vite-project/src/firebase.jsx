@@ -1,15 +1,21 @@
-import firebase from "firebase/app"
-import 'firebase/auth'
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider } from "firebase/auth"
+import { getFirestore } from "firebase/firestore"
 
-const FireBase = firebase.initializeApp({
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
-})
 
-export const auth = FireBase.auth()
+const firebaseConfig = {
+    apiKey: "AIzaSyAVkJ6uIB8Qa3IBrjT97dJijg_GNtY5gic",
+    authDomain: "authentication-course-d791d.firebaseapp.com",
+    projectId: "authentication-course-d791d",
+    storageBucket: "authentication-course-d791d.appspot.com",
+    messagingSenderId: "396157179039",
+    appId: "1:396157179039:web:5fd118d70e32b66ecb7eaa",
+    measurementId: "G-461DYL4RH0"
+};
 
-export default FireBase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app)
+
+export const googleProvider = new GoogleAuthProvider(app)
+
+export const Firestore = getFirestore(app)

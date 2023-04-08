@@ -75,6 +75,6 @@ export const AuthInput = () => {
             Sign up
         </button>
         <button onClick={googleSignin}>Sign in with google</button>
-        <button onClick={googleSignout}>Sign out with google</button>
+        <button onClick={googleSignout}>Sign out</button>
     </AuthContext.Provider>
 }

@@ -1,7 +1,8 @@
 import { AuthInput } from "./inputs"
-import { Firestore } from "./firebase"
+import { Firestore, auth, storage } from "./firebase"
 import { useState, useEffect } from "react"
-import { getDocs, collection, addDoc } from "firebase/firestore"
+import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore"
+import { ref, uploadBytes } from "firebase/storage"
 function App() {
     const [movies, setMovies] = useState([])
 
@@ -10,6 +11,10 @@ function App() {
     const [enterMovie, setEnterMovie] = useState("")
     const [enterReleaseDate, setEnterReleaseDate] = useState(0)
     const [isMovieOscar, setEnterMovieOscar] = useState(false)
+
+    const [updateTitle, setUpdatedTitle] = useState('')
+
+    const [fileUpload, setFileUpload] = useState(null)
 
     async function getMovies() {
         try {
@@ -31,10 +36,38 @@ function App() {
     const addMovie = async () => {
         try {
             await addDoc(movieCollectionList, {
-                tita: enterMovie,
-                date: enterReleaseDate,
-                isMovieOscars: isMovieOscar
+                title: enterMovie,
+                releaseDate: enterReleaseDate,
+                isMovieOscar: isMovieOscar,
+                userId: auth?.currentUser.uid
             })
+            getMovies()
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const deleteMovie = async (id) => {
+        const movieDoc = doc(Firestore, "movies", id)
+        await deleteDoc(movieDoc)
+        getMovies()
+    }
+
+    const updateMovieTitle = async (id) => {
+        const movieDoc = doc(Firestore, "movies", id)
+        await updateDoc(movieDoc, {
+            title: updateTitle
+        })
+        getMovies()
+    }
+
+    async function fileAdd() {
+        if (!fileUpload) {
+            return
+        }
+        const fileUploadRef = ref(storage, `img/${fileUpload.name}`)
+        try {
+            await uploadBytes(fileUploadRef, fileUpload)
             getMovies()
         } catch (error) {
             console.log(error);
@@ -59,10 +92,21 @@ function App() {
         <div>
             {movies.map((movie, index) => {
                 return <div key={index}>
-                    <h1>{movie.tita}</h1>
-                    <h1>{movie.date}</h1>
+                    <h1>{movie.title}</h1>
+                    <h1>{movie.releaseDate}</h1>
+                    <button onClick={() => deleteMovie(movie.id)}>Delete movie</button>
+                    <input type="text" onChange={(e) => {
+                        setUpdatedTitle(e.target.value)
+                    }} />
+                    <button onClick={() => updateMovieTitle(movie.id)}>Update movie title</button>
                 </div>
             })}
+            <div>
+                <input type="file" onChange={(e) => {
+                    setFileUpload(e.target.files[0])
+                }} />
+                <button onClick={fileAdd}>Add img</button>
+            </div>
         </div>
     </div>
 }

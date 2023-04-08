@@ -1,6 +1,5 @@
 import { auth, googleProvider } from "./firebase"
 import React, { useState, useContext, useEffect } from "react"
-import { async } from "@firebase/util"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth"
 import Home from "./home"
 

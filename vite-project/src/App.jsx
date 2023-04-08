@@ -59,8 +59,8 @@ function App() {
         <div>
             {movies.map((movie, index) => {
                 return <div key={index}>
-                    <h1>{movie.title}</h1>
-                    <h1>{movie.releaseDate}</h1>
+                    <h1>{movie.tita}</h1>
+                    <h1>{movie.date}</h1>
                 </div>
             })}
         </div>

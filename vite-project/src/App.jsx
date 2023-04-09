@@ -2,7 +2,7 @@ import { AuthInput } from "./inputs"
 import { Firestore, auth, storage } from "./firebase"
 import { useState, useEffect } from "react"
 import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore"
-import { ref, uploadBytes } from "firebase/storage"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 function App() {
     const [movies, setMovies] = useState([])
 
@@ -15,6 +15,7 @@ function App() {
     const [updateTitle, setUpdatedTitle] = useState('')
 
     const [fileUpload, setFileUpload] = useState(null)
+    const [image, setImage] = useState(null)
 
     async function getMovies() {
         try {
@@ -67,15 +68,21 @@ function App() {
         }
         const fileUploadRef = ref(storage, `img/${fileUpload.name}`)
         try {
-            await uploadBytes(fileUploadRef, fileUpload)
-            getMovies()
+            await uploadBytes(fileUploadRef, fileUpload).then(() => {
+                getDownloadURL(fileUploadRef).then((url) => {
+                    setImage(url)
+                })
+            })
+            setFileUpload(null)
         } catch (error) {
             console.log(error);
         }
     }
+    console.log(fileUpload);
 
     return <div>
         <AuthInput></AuthInput>
+
         <div>
             <input type="text" placeholder="enter a movie" onChange={(e) => {
                 setEnterMovie(e.target.value)
@@ -108,6 +115,7 @@ function App() {
                 <button onClick={fileAdd}>Add img</button>
             </div>
         </div>
+        <img src={image} alt="" />
     </div>
 }
 
